@@ -6,6 +6,8 @@ import re
 
 #unde e
 
+#@Valentin vezi asta?
+
 
 def get_line_type(line):
     if "mov" in line:
@@ -284,3 +286,4 @@ else:
 
 f.close()
 g.close()
+
