@@ -8,6 +8,8 @@ import re
 
 #@Valentin vezi asta?
 
+#yep, mai bun era in Rust :))
+
 
 def get_line_type(line):
     if "mov" in line:
@@ -286,4 +288,5 @@ else:
 
 f.close()
 g.close()
+
 
