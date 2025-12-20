@@ -1,0 +1,78 @@
+storeifr <registru>,<offset>,<depth>:
+  mov $<registru fara %>_if<depth>,%edi
+  mov <registru>, <offset>(%edi)
+
+storeifv <variabila>,<offset>,<depth>:
+  mov $<variabila>_if<depth>,%edi
+  mov <variabila>, %ebp
+  mov %ebp,<offset>(%edi)
+
+loadifr <registru>,<offset>,<depth>:
+  mov $<registru fara %>_if<depth>,%edi
+  mov <offset>(%edi),<registru>
+
+loadifv <variabila>,<offset>,<depth>:
+  mov $<variabila>_if<depth>,%edi
+  mov <offset>(%edi),%ebp
+  mov %ebp,<variabila>
+
+cmprr <registru1>,<registru2>,<depth>:
+  mov <registru1>,if_operand_x
+  mov <regsitru2>,if_operand_y
+  //codul cu skip il scriu mai tarziu
+
+cmpri <registru1> <imm>
+  //de scris
+
+cmprv <registru1> <variabila>
+  //de scris
+
+cmpir <imm> <registru>
+  //de scris
+
+cmpii <imm1> <imm2>
+  //de scris
+
+cmpiv <imm> <variabila>
+  //de scris
+
+cmpvr <variabila> <registru>
+  //de scris
+
+cmpvi <variabila> <imm>
+  //de scris
+
+cmpvv <variabila1> <variabila2>
+  //de scris
+
+inc <operand>:
+  //de scris
+
+dec <operand>:
+  //de scris
+
+add <operand1>,<operand2>
+  //de gandit
+
+sub <operand1>,<operand2>
+  //de gandit
+
+mul <operand1>,<operand2>
+  //de gandit
+
+div <operand1>,<operand2>
+  //de gandit
+
+imul <operand1>,<operand2>
+  //de gandit
+
+idiv <operand1>,<operand2>
+  //de gandit
+
+selectorif <registru>,<depth>
+  //de scris
+
+updateif <registru>,<depth>
+  //de scris
+
+
