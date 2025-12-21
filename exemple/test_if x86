@@ -1,0 +1,23 @@
+.data
+	x: .long 7
+	y: .long 0
+.text
+.global main
+main:
+	mov x,%eax
+	mov y,%ebx
+	cmp %eax,%ebx
+	je egale
+	jne diferite
+egale:
+	mov $3,%ecx
+	mov $5,%edx
+diferite:
+	mov $2,%ebx
+	mov $18,%ecx
+	mov $19,%edx
+	mov $20,%ebx
+exit:
+	mov $1,%eax
+	mov $0,%ebx
+	int $0x80
