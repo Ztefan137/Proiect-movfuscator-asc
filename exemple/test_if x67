@@ -1,0 +1,60 @@
+.data
+	x: .long 7
+	y: .long 0
+    x_if1: .long 0,0
+    y_if1: .long 0,0
+    eax_if1: .long 0,0
+    ebx_if1: .long 0,0
+    ecx_if1: .long 0,0
+    edx_if1: .long 0,0
+    selector_if1: .long 0
+.bss
+    eq: .skip 256
+.text
+.global main
+main:
+#if yes
+#for no
+#if depth 1
+#for depth 0
+	mov x,%eax
+	mov y,%ebx
+
+    cmprr %eax,%ebx,d1
+    #changed %ebx,%ecx,%edx
+    store %ebx,False,d1
+    store %ecx,False,d1
+    store %edx,False,d1
+if_egale:
+    mov $3,%ecx
+	mov $5,%edx
+    store %ebx,True,d1
+    store %ecx,True,d1
+    store %edx,True,d1
+else_diferite:
+    load %ebx,False,d1
+    load %ecx,False,d1
+    load %edx,False,d1
+    mov $2,%ebx
+	mov $18,%ecx
+	mov $19,%edx
+	mov $20,%ebx
+    store %ebx,False,d1
+    store %ecx,False,d1
+    store %edx,False,d1
+
+    prepare_selector %bl,d1
+
+    update %ecx,d1
+    update %edx,d1
+    update %ebx,d1
+
+exit:
+    mov $1,%eax
+    mov $0,%ebx
+    int $0x80
+
+
+    
+
+
