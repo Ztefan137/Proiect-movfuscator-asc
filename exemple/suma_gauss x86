@@ -1,0 +1,19 @@
+.data
+.text
+.global main
+main:
+	mov n,%eax
+	mov $0,%ebx
+	mov $1,%ecx 
+loop:
+	cmp %eax,%ecx
+	je end_loop
+	add %ecx,%ebx
+	inc %ecx
+	jmp loop
+end_loop:
+	mov %ebx,s
+exit:
+	mov $1,%eax
+	mov $0,%ebx
+	int $0x80
