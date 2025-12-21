@@ -1,0 +1,114 @@
+.data
+	n: .long 7
+	s: .long 0
+
+	f1: .long 1
+	f2: .long 0
+	f3: .long 0
+
+	n_if1: .long 0,0
+	s_if1: .long 0,0
+	f1_if1: .long 0,0
+	f2_if1: .long 0,0
+	f3_if1: .long 0,0
+	eax_if1: .long 0,0
+	ebx_if1: .long 0,0
+	ecx_if1: .long 0,0
+	edx_if1: .long 0,0
+
+	n_if2: .long 0,0
+	s_if2: .long 0,0
+	f1_if2: .long 0,0
+	f2_if2: .long 0,0
+	f3_if2: .long 0,0
+	eax_if2: .long 0,0
+	ebx_if2: .long 0,0
+	ecx_if2: .long 0,0
+	edx_if2: .long 0,0
+	
+	#mai trebuie si alea pt aritmetice
+	#n am chef sa le scriu
+.bss
+.text
+.global main
+main:
+l1:
+	cmpvi f1,$1,1
+	#changed %eax,%ebx,%ecx,f1,f2
+	storer %eax,0,1
+	storer %ebx,0,1
+	storer %ecx,0,1
+	storev f1,0,1
+	storev f2,0,1
+	#if
+	mov n,%eax
+	mov $0,%ebx
+	mov $1,%ecx
+	mov $0,f1
+	mov $1,f2
+	storer %eax,4,1
+	storer %ebx,4,1
+	storer %ecx,4,1
+	storev f1,4,1
+	storev f2,4,1
+	#else
+	#endif
+	prepare-selector %bl,1
+	updater %eax,1
+	updater %ebx,1
+	updater %ecx,1
+	updatev f1,1
+	updatev f2,1
+l2_loop:
+	cmpvi f2,$1,1
+	#changed %ebx,%ecx,f2,f3
+	storer %ebx,0,1
+	storer %ecx,0,1
+	storev f2,0,1
+	storev f3,0,1
+	#if
+	add %ecx,%ebx
+	inc %ecx
+
+	cmprr %eax,%ecx,2
+	#changed f2,f3
+	storev f2,0,2
+	storev f3,0,2
+	#if
+	mov $0,f2
+	mov $1,f3
+	storev f2,4,2
+	storev f3,4,2
+	#else
+	#endif
+	prepare-selector %bl,2
+	update f2,2
+	update f3,2
+	
+	storer %ebx,4,1
+	storer %ecx,4,1
+	storev f2,4,1
+	storev f3,4,1
+	#else
+	#endif
+	prepare-selector %bl,1
+	updater %eax,1
+	updater %ebx,1
+	updater %ecx,1
+	updatev f2,1
+	updatev f3,1
+l3:
+	cmpvi f3,$1,1
+	#changed s
+	storev s,0,1
+	#if
+	mov %ebx,s
+	storev s,4,1
+	#else
+	#endif
+	prepare-selector %bl,1
+	updatev s,1
+	restore-selector 1
+	#mai trebuie facut si apelul de iesire
+	#inca ma mai gandesc cum
+jmp main
