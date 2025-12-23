@@ -19,31 +19,207 @@ loadifv <variabila>,<offset>,<depth>:
 cmprr <registru1>,<registru2>,<depth>:
   mov <registru1>,if_operand_x
   mov <regsitru2>,if_operand_y
-  //codul cu skip il scriu mai tarziu
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
 
 cmpri <registru1> <imm>
-  //de scris
+  mov <registru>,if_operand_x
+  mov <imm>,if_operand_y
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
 
 cmprv <registru1> <variabila>
-  //de scris
+  mov <registru>,if_operand_x
+  mov <variabila>,%ebp
+  mov %ebp,if_operand_y
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
 
 cmpir <imm> <registru>
-  //de scris
+  mov <imm>,if_operand_x
+  mov <regitru>,if_operand_y
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
 
 cmpii <imm1> <imm2>
-  //de scris
+  mov <imm1>,if_operand_x
+  mov <imm2>,if_operand_y
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
 
 cmpiv <imm> <variabila>
-  //de scris
+  mov <imm>,if_operand_x
+  mov <variabila>,%ebp
+  mov %ebp,if_operand_y
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
 
 cmpvr <variabila> <registru>
-  //de scris
+  mov <variabila>,%ebp
+  mov %ebp,if_operand_x
+  mov <regitru>,if_operand_y
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
 
 cmpvi <variabila> <imm>
-  //de scris
+  mov <variabila>,%ebp
+  mov %ebp,if_operand_x
+  mov <imm>,if_operand_y
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
 
 cmpvv <variabila1> <variabila2>
-  //de scris
+  mov <variabila1>,%ebp
+  mov %ebp,if_operand_x
+  mov <variabila2>,%ebp
+  mov %ebp,if_operand_y
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
+	mov $0,%eax
+	mov $0,%ebx
+	movb if_operand_x,%al
+	movb $0,eq(,%eax,1)
+	movb if_operand_y,%al
+	movb $4,eq(,%eax,1)
+	movb if_operand_x,%al
+	movb eq(,%eax,1),%bl
+  mov %ebx,selector<depth>
+
+  mov $comparison_register_saving,%edi
+  mov %eax,0(%edi)
+  mov %ebx,4(%edi)
+
 
 inc <operand>:
   //de scris
