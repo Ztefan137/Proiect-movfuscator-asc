@@ -222,15 +222,31 @@ cmpvv <variabila1> <variabila2>
 
 
 inc <operand>:
-  //de scris
-//cand operand este registru, pentru adresa de memorie?
+  
+//cand operand este registru
 //pp declarat lookup: .byte 1,2,3,...,255
 //<registru_low> e partea low de 8biti
+
 movzbl <registru_low>, <registru>
 movb lookup(<registru>), <registru_low>
 
+
+/*
+//adresa de memorie?
+inc <adresa>: //$...
+	mov <adresa>, %ebx
+	movb (%ebx), %al
+	movzbl %al, %eax
+	movb lookup(%eax),%al
+	movb %al, (%ebx)
+*/
+
+
 dec <operand>:
-  //de scris
+	//cand operand = registru,
+	//look_dec: .byte 255, 0,1,...,254
+	movzbl <registru_low>, <registru>
+	movb look_dec(<registru>), <registru_low>
 
 add <operand1>,<operand2>
   //de gandit
