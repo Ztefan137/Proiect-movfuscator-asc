@@ -1,0 +1,47 @@
+{
+    "instructions":[
+        {
+            "name": "loadv",
+            "param": ["variable","offset","depth"],
+            "template": [
+                "mov $<variable>_if<depth>,%edi",
+                "mov <offset>(%edi),%ebp",
+                "mov %ebp,<variabila>"
+            ]
+        },
+        {
+            "name": "storev",
+            "param": ["variable","offset","depth"],
+            "template": [
+                "mov $<variable>_if<depth>,%edi",
+                "mov <variable>, %ebp",
+                "mov %ebp,<offset>(%edi)"
+            ]
+        },
+        {
+            "name": "loadr",
+            "param": ["register","offset","depth"],
+            "except":[["register%","l/register"]],
+            "template": [
+                "mov $<register%>_if<depth>,%edi",
+                "mov <register>, <offset>(%edi)"
+            ]
+        },
+        {
+            "name": "storer",
+            "param": ["register","offset","depth"],
+            "except":[["register%","l/register"]],
+            "template": [
+                "mov $<register%>_if<depth>,%edi",
+                "mov <register>, <offset>(%edi)"
+            ]
+        },
+        {
+            "name": "instructiune_random",
+            "param": ["param1","param2","param3"],
+            "template": [
+                "Ana are <param1> mere si <param2> si mai are <param3> prune"
+            ]
+        }
+    ]
+}
