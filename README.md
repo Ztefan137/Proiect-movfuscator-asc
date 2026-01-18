@@ -1,4 +1,4 @@
-#Movfuscator
+# Movfuscator
 
 ### Prezentare generală a ideilor din proiect
 
