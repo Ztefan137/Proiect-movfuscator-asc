@@ -214,9 +214,46 @@ def add_labels(asm_lines,output,code_blocks,loop_exits):
                 output.write(f"mov $1,f{keys[i+1][1:]}\n")
 
 
+#------------------------------#
+#functii pt decisional_handling#
+#------------------------------#
+
+def get_decisional_branches():
+    print("step 2.1")
+    #aici trebuie sa implementam ideea de 2 pointers sa analizam branchurile
+    #branchuri imbricate wip
+
+def get_changed_data():
+    print("step 2.2")
+
+def define_if_variables(asm_lines,output,datas,depth):
+    print("step 2.3")
+    output.write(f".data\n")
+    idx_main=asm_lines.index(".text")
+    for i in range(1,idx_main):
+        output.write(f"{asm_lines[i]}\n")   
+
+    output.write("\n")
+    for i in range(1,depth+1):
+        for data in datas:
+            output.write(f"{data}_if{i}: 0,0\n")
+        output.write("\n")
+    for i in range(1,depth+1):
+        output.write(f"selector_if{i}: 0\n")
+    output.write("\n")
+
+    for i in range(idx_main,len(asm_lines)):
+        output.write(f"{asm_lines[i]}\n")
+
+def get_data():
+    data=[f"eax",f"ebx",f"ecx",f"edx",f"edi",f"esi",f"esp",f"ebp"]
+    variables=["n"]
+    for variable in variables:
+        data.append(variable)
+    return data
+
 #tot ce se va mai inlocui vor fi functiile de mai sus
 #ce e sub comentariul asta ramane in mare parte batut in cuie
-
 
 #----------------------------------------------------#
 #functiile corespunzatoare celor 3 etape de compilare#
@@ -234,13 +271,18 @@ def loop_handling(input,output):
 def decisional_handling(input,output):
     asm_lines=[line.strip() for line in input.readlines()] #extragerea liniilor din fisierul de la pasul anterior
     #identificare de structuri decizionale(branchuri conditii cmp-uri test-uri etc.)
-    #identificarea variabilelor schimbate in bloculuri decizionale
+    #decisional_structures=get_decisional_branches(asm_lines)
+    #identificarea variabilelor schimbate in blocurile decizionale
+    #changed_data=get_changed_data(asm_lines,decisional_structures)
     #define if storage data
-    #adaugarea arhitecturii de load store
-    #
+    #define_if_variables()
+    
+    define_if_variables(asm_lines,output,get_data(),2)
 
 def operational_handling(input,output):
     asm_lines=[line.strip() for line in input.readlines()] #extragerea liniilor din fisierul de la pasul anterior
+    for line in asm_lines:
+        output.write(f"{line}\n")
 
 #--------------------#
 #functia de compilare#
