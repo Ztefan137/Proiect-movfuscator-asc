@@ -1,6 +1,10 @@
--curatat codul (Stefan)
--implemenatat if uri (Stefan)
--analiza sintactica a ifurilor (Ecaterina)
--implementare a comparatiilor de tipul x<y x>y (luiza :D)
--implementare mul,imul,div,idiv (luiza :P)
--documentatie (idei-toti, redactare-cine vrea)
+-redactat documentatie
+-implementat impartire in blocuri foruri
+-implementat impartire in branchuri ifuri
+-implementat scrierea arhitecturii load/store inainte de ifuri
+-!!!!gandit efectuarea comparatiilor de forma a<b
+-implementat scrierea lookuptableurilor
+-completare json
+-adaugare logica suplimentara pentru excepturile din json
+-implementat apel de functii vide
+-implementat apeluri de sistem vide
