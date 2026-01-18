@@ -22,26 +22,26 @@ main:
 
     cmprr %eax,%ebx,d1
     #changed %ebx,%ecx,%edx
-    store %ebx,False,d1
-    store %ecx,False,d1
-    store %edx,False,d1
+    storeifr %ebx,0,1
+    storeifr %ecx,0,1
+    storeifr %edx,0,1
 if_egale:
     mov $3,%ecx
 	mov $5,%edx
-    store %ebx,True,d1
-    store %ecx,True,d1
-    store %edx,True,d1
+    storeifr %ebx,4,1
+    storeifr %ecx,4,1
+    storeifr %edx,4,1
 else_diferite:
-    load %ebx,False,d1
-    load %ecx,False,d1
-    load %edx,False,d1
+    loadifr %ebx,0,1
+    loadifr %ecx,0,1
+    loadifr %edx,0,1
     mov $2,%ebx
 	mov $18,%ecx
 	mov $19,%edx
 	mov $20,%ebx
-    store %ebx,False,d1
-    store %ecx,False,d1
-    store %edx,False,d1
+    storeifr %ebx,0,1
+    storeifr %ecx,0,1
+    storeifr %edx,0,1
 
     prepare_selector %bl,d1
 
