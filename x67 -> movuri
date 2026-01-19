@@ -272,4 +272,26 @@ selectorif <registru>,<depth>
 updateif <registru>,<depth>
   //de scris
 
+preapare_cmp_operand_x_r <register>
+preapare_cmp_operand_x_i <imm>
+preapare_cmp_operand_x_v <value>
+
+preapare_cmp_operand_y_r <register>
+preapare_cmp_operand_y_i <imm>
+preapare_cmp_operand_y_v <value>
+
+cmp_eq <depth>
+
+cmp_ne <depth>
+
+cmp_lt <depth>
+
+cmp_gt <depth>
+
+cmp_le <depth>
+
+cmp_ge <depth>
+
+
+
 
