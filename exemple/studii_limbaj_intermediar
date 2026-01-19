@@ -11,6 +11,7 @@ egale:
 final:
 
 in isa intermediar:
+
 load_operand_x_v a
 load_operand_y_v b
 cmp_eq 1
