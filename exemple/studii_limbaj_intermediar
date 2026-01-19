@@ -1,1 +1,25 @@
+implementarea generifca a unui a == b? %eax=1:%eax=0
+
+Obs in assembly implementam astfel:
+cmp a,b # omitem incarcarea in registrii 
+je egale
+diferite:
+  mov $0,%eax
+  jmp final
+egale:
+  mov $1,%eax
+final:
+
+in isa intermediar:
+load_operand_x_v a
+load_operand_y_v b
+cmp_eq 1
+store %eax,0,1
+mov $1,%eax
+store %eax,4,1
+load %eax,0,1
+mov $0,%eax
+store %eax,0,1
+update %eax,1
+
 
