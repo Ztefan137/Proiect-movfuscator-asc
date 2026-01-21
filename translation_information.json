@@ -6,7 +6,7 @@
             "template": [
                 "mov $<variable>_if<depth>,%edi",
                 "mov <offset>(%edi),%ebp",
-                "mov %ebp,<variabila>"
+                "mov %ebp,<variable>"
             ]
         },
         {
@@ -21,7 +21,7 @@
         {
             "name": "loadr",
             "param": ["register","offset","depth"],
-            "except":[["register%","l/register"]],
+            "except":[["register%","%/register"]],
             "template": [
                 "mov $<register%>_if<depth>,%edi",
                 "mov <register>, <offset>(%edi)"
@@ -30,17 +30,31 @@
         {
             "name": "storer",
             "param": ["register","offset","depth"],
-            "except":[["register%","l/register"]],
+            "except":[["register%","%/register"]],
             "template": [
                 "mov $<register%>_if<depth>,%edi",
                 "mov <register>, <offset>(%edi)"
             ]
         },
         {
-            "name": "instructiune_random",
-            "param": ["param1","param2","param3"],
+            "name": "lea",
+            "param": ["memory_place","destination"],
             "template": [
-                "Ana are <param1> mere si <param2> si mai are <param3> prune"
+                "mov $<memory_place>,<destination>"
+            ]
+        },
+        {
+            "name": "xors",
+            "param": ["operand"],
+            "template": [
+                "mov $0,<operand>"
+            ]
+        },
+        {
+            "name": "load_operand_x_r",
+            "param": ["register"],
+            "template": [
+                "mov <register>,operand_if_x"
             ]
         }
     ]
