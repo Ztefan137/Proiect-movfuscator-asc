@@ -1,0 +1,16 @@
+.data
+.text
+.global main
+main:
+  mov $0,%eax
+  mov $1,%ebx
+  cmp %eax,%ebx
+  je egale
+diferite:
+  mov $1,%ecx
+egale:
+  mov $0,%ecx
+exit:
+  mov $1,%eax
+  mov $0,%ebx
+  int $0x80
