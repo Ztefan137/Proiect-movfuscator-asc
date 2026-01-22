@@ -1,0 +1,784 @@
+.data
+n: .long 6
+s: .long 0
+f1: .long 1
+f2: .long 0
+f3: .long 0
+f_final: .long 0
+
+ecx_if1: .long 0,0
+edx_if1: .long 0,0
+esi_if1: .long 0,0
+esp_if1: .long 0,0
+ebp_if1: .long 0,0
+n_if1: .long 0,0
+s_if1: .long 0,0
+f1_if1: .long 0,0
+f2_if1: .long 0,0
+f3_if1: .long 0,0
+f_final_if1: .long 0,0
+eax_if1: .long 0,0
+ebx_if1: .long 0,0
+
+ecx_if2: .long 0,0
+edx_if2: .long 0,0
+esi_if2: .long 0,0
+esp_if2: .long 0,0
+ebp_if2: .long 0,0
+n_if2: .long 0,0
+s_if2: .long 0,0
+f1_if2: .long 0,0
+f2_if2: .long 0,0
+f3_if2: .long 0,0
+f_final_if2: .long 0,0
+eax_if2: .long 0,0
+ebx_if2: .long 0,0
+
+selector_if1: .long 0
+selector_if2: .long 0
+
+
+if_operand_x: .long 0
+if_operand_y: .long 0
+.bss
+eq: .skip 256
+.text
+.global main
+main:
+l1:
+
+mov $ecx_if1,%edi
+mov %ecx, 0(%edi)
+mov $edx_if1,%edi
+mov %edx, 0(%edi)
+mov $esi_if1,%edi
+mov %esi, 0(%edi)
+mov $esp_if1,%edi
+mov %esp, 0(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 0(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,0(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,0(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,0(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,0(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,0(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,0(%edi)
+mov $eax_if1,%edi
+mov %eax, 0(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 0(%edi)
+mov $1,if_operand_x
+mov f1, %ebp
+mov %ebp,if_operand_y
+mov $0,%eax
+movb if_operand_x,%al
+movb $4,eq(,%eax,1)
+movb if_operand_y,%al
+movb $0,eq(,%eax,1)
+movb if_operand_x,%al
+mov $0,%ebx
+movb eq(,%eax,1),%bl
+mov %ebx,selector_if1
+mov $eax_if1,%edi
+mov 0(%edi),%eax
+mov $ebx_if1,%edi
+mov 0(%edi),%ebx
+mov $ecx_if1,%edi
+mov %ecx, 4(%edi)
+mov $edx_if1,%edi
+mov %edx, 4(%edi)
+mov $esi_if1,%edi
+mov %esi, 4(%edi)
+mov $esp_if1,%edi
+mov %esp, 4(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 4(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,4(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,4(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,4(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,4(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,4(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,4(%edi)
+mov $eax_if1,%edi
+mov %eax, 4(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 4(%edi)
+mov $ecx_if1,%edi
+mov 0(%edi),%ecx
+mov $edx_if1,%edi
+mov 0(%edi),%edx
+mov $esi_if1,%edi
+mov 0(%edi),%esi
+mov $esp_if1,%edi
+mov 0(%edi),%esp
+mov $ebp_if1,%edi
+mov 0(%edi),%ebp
+mov $n_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,n
+mov $s_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,s
+mov $f1_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f1
+mov $f2_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f2
+mov $f3_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f3
+mov $f_final_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f_final
+mov $eax_if1,%edi
+mov 0(%edi),%eax
+mov $ebx_if1,%edi
+mov 0(%edi),%ebx
+mov $1,%ecx
+mov n,%eax
+mov $0,%ebx
+mov $0,f1
+mov $1,f2
+mov $ecx_if1,%edi
+mov %ecx, 0(%edi)
+mov $edx_if1,%edi
+mov %edx, 0(%edi)
+mov $esi_if1,%edi
+mov %esi, 0(%edi)
+mov $esp_if1,%edi
+mov %esp, 0(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 0(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,0(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,0(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,0(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,0(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,0(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,0(%edi)
+mov $eax_if1,%edi
+mov %eax, 0(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 0(%edi)
+mov selector_if1,%ebx
+mov $ecx_if1,%edi
+mov (%edi,%ebx,1),%ecx
+mov $edx_if1,%edi
+mov (%edi,%ebx,1),%edx
+mov $esi_if1,%edi
+mov (%edi,%ebx,1),%esi
+mov $esp_if1,%edi
+mov (%edi,%ebx,1),%esp
+mov $ebp_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov $n_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,n
+mov $s_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,s
+mov $f1_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f1
+mov $f2_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f2
+mov $f3_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f3
+mov $f_final_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f_final
+mov $eax_if1,%edi
+mov (%edi,%ebx,1),%eax
+mov $ebx_if1,%edi
+mov (%edi,%ebx,1),%ebx
+l2:
+
+mov $ecx_if1,%edi
+mov %ecx, 0(%edi)
+mov $edx_if1,%edi
+mov %edx, 0(%edi)
+mov $esi_if1,%edi
+mov %esi, 0(%edi)
+mov $esp_if1,%edi
+mov %esp, 0(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 0(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,0(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,0(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,0(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,0(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,0(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,0(%edi)
+mov $eax_if1,%edi
+mov %eax, 0(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 0(%edi)
+mov $1,if_operand_x
+mov f2, %ebp
+mov %ebp,if_operand_y
+mov $0,%eax
+movb if_operand_x,%al
+movb $4,eq(,%eax,1)
+movb if_operand_y,%al
+movb $0,eq(,%eax,1)
+movb if_operand_x,%al
+mov $0,%ebx
+movb eq(,%eax,1),%bl
+mov %ebx,selector_if1
+mov $eax_if1,%edi
+mov 0(%edi),%eax
+mov $ebx_if1,%edi
+mov 0(%edi),%ebx
+mov $ecx_if1,%edi
+mov %ecx, 4(%edi)
+mov $edx_if1,%edi
+mov %edx, 4(%edi)
+mov $esi_if1,%edi
+mov %esi, 4(%edi)
+mov $esp_if1,%edi
+mov %esp, 4(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 4(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,4(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,4(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,4(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,4(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,4(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,4(%edi)
+mov $eax_if1,%edi
+mov %eax, 4(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 4(%edi)
+mov $ecx_if1,%edi
+mov 0(%edi),%ecx
+mov $edx_if1,%edi
+mov 0(%edi),%edx
+mov $esi_if1,%edi
+mov 0(%edi),%esi
+mov $esp_if1,%edi
+mov 0(%edi),%esp
+mov $ebp_if1,%edi
+mov 0(%edi),%ebp
+mov $n_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,n
+mov $s_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,s
+mov $f1_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f1
+mov $f2_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f2
+mov $f3_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f3
+mov $f_final_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f_final
+mov $eax_if1,%edi
+mov 0(%edi),%eax
+mov $ebx_if1,%edi
+mov 0(%edi),%ebx
+add %ecx,%ebx
+inc %ecx
+
+mov $ecx_if2,%edi
+mov %ecx, 0(%edi)
+mov $edx_if2,%edi
+mov %edx, 0(%edi)
+mov $esi_if2,%edi
+mov %esi, 0(%edi)
+mov $esp_if2,%edi
+mov %esp, 0(%edi)
+mov $ebp_if2,%edi
+mov %ebp, 0(%edi)
+mov $n_if2,%edi
+mov n, %ebp
+mov %ebp,0(%edi)
+mov $s_if2,%edi
+mov s, %ebp
+mov %ebp,0(%edi)
+mov $f1_if2,%edi
+mov f1, %ebp
+mov %ebp,0(%edi)
+mov $f2_if2,%edi
+mov f2, %ebp
+mov %ebp,0(%edi)
+mov $f3_if2,%edi
+mov f3, %ebp
+mov %ebp,0(%edi)
+mov $f_final_if2,%edi
+mov f_final, %ebp
+mov %ebp,0(%edi)
+mov $eax_if2,%edi
+mov %eax, 0(%edi)
+mov $ebx_if2,%edi
+mov %ebx, 0(%edi)
+mov %eax,if_operand_x
+mov %ecx,if_operand_y
+mov $0,%eax
+movb if_operand_x,%al
+movb $4,eq(,%eax,1)
+movb if_operand_y,%al
+movb $0,eq(,%eax,1)
+movb if_operand_x,%al
+mov $0,%ebx
+movb eq(,%eax,1),%bl
+mov %ebx,selector_if2
+mov $eax_if2,%edi
+mov 0(%edi),%eax
+mov $ebx_if2,%edi
+mov 0(%edi),%ebx
+mov $ecx_if2,%edi
+mov %ecx, 4(%edi)
+mov $edx_if2,%edi
+mov %edx, 4(%edi)
+mov $esi_if2,%edi
+mov %esi, 4(%edi)
+mov $esp_if2,%edi
+mov %esp, 4(%edi)
+mov $ebp_if2,%edi
+mov %ebp, 4(%edi)
+mov $n_if2,%edi
+mov n, %ebp
+mov %ebp,4(%edi)
+mov $s_if2,%edi
+mov s, %ebp
+mov %ebp,4(%edi)
+mov $f1_if2,%edi
+mov f1, %ebp
+mov %ebp,4(%edi)
+mov $f2_if2,%edi
+mov f2, %ebp
+mov %ebp,4(%edi)
+mov $f3_if2,%edi
+mov f3, %ebp
+mov %ebp,4(%edi)
+mov $f_final_if2,%edi
+mov f_final, %ebp
+mov %ebp,4(%edi)
+mov $eax_if2,%edi
+mov %eax, 4(%edi)
+mov $ebx_if2,%edi
+mov %ebx, 4(%edi)
+mov $ecx_if2,%edi
+mov 0(%edi),%ecx
+mov $edx_if2,%edi
+mov 0(%edi),%edx
+mov $esi_if2,%edi
+mov 0(%edi),%esi
+mov $esp_if2,%edi
+mov 0(%edi),%esp
+mov $ebp_if2,%edi
+mov 0(%edi),%ebp
+mov $n_if2,%edi
+mov 0(%edi),%ebp
+mov %ebp,n
+mov $s_if2,%edi
+mov 0(%edi),%ebp
+mov %ebp,s
+mov $f1_if2,%edi
+mov 0(%edi),%ebp
+mov %ebp,f1
+mov $f2_if2,%edi
+mov 0(%edi),%ebp
+mov %ebp,f2
+mov $f3_if2,%edi
+mov 0(%edi),%ebp
+mov %ebp,f3
+mov $f_final_if2,%edi
+mov 0(%edi),%ebp
+mov %ebp,f_final
+mov $eax_if2,%edi
+mov 0(%edi),%eax
+mov $ebx_if2,%edi
+mov 0(%edi),%ebx
+mov $0,f2
+mov $1,f3
+mov $ecx_if2,%edi
+mov %ecx, 0(%edi)
+mov $edx_if2,%edi
+mov %edx, 0(%edi)
+mov $esi_if2,%edi
+mov %esi, 0(%edi)
+mov $esp_if2,%edi
+mov %esp, 0(%edi)
+mov $ebp_if2,%edi
+mov %ebp, 0(%edi)
+mov $n_if2,%edi
+mov n, %ebp
+mov %ebp,0(%edi)
+mov $s_if2,%edi
+mov s, %ebp
+mov %ebp,0(%edi)
+mov $f1_if2,%edi
+mov f1, %ebp
+mov %ebp,0(%edi)
+mov $f2_if2,%edi
+mov f2, %ebp
+mov %ebp,0(%edi)
+mov $f3_if2,%edi
+mov f3, %ebp
+mov %ebp,0(%edi)
+mov $f_final_if2,%edi
+mov f_final, %ebp
+mov %ebp,0(%edi)
+mov $eax_if2,%edi
+mov %eax, 0(%edi)
+mov $ebx_if2,%edi
+mov %ebx, 0(%edi)
+mov selector_if2,%ebx
+mov $ecx_if2,%edi
+mov (%edi,%ebx,1),%ecx
+mov $edx_if2,%edi
+mov (%edi,%ebx,1),%edx
+mov $esi_if2,%edi
+mov (%edi,%ebx,1),%esi
+mov $esp_if2,%edi
+mov (%edi,%ebx,1),%esp
+mov $ebp_if2,%edi
+mov (%edi,%ebx,1),%ebp
+mov $n_if2,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,n
+mov $s_if2,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,s
+mov $f1_if2,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f1
+mov $f2_if2,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f2
+mov $f3_if2,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f3
+mov $f_final_if2,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f_final
+mov $eax_if2,%edi
+mov (%edi,%ebx,1),%eax
+mov $ebx_if2,%edi
+mov (%edi,%ebx,1),%ebx
+mov $ecx_if1,%edi
+mov %ecx, 0(%edi)
+mov $edx_if1,%edi
+mov %edx, 0(%edi)
+mov $esi_if1,%edi
+mov %esi, 0(%edi)
+mov $esp_if1,%edi
+mov %esp, 0(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 0(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,0(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,0(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,0(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,0(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,0(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,0(%edi)
+mov $eax_if1,%edi
+mov %eax, 0(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 0(%edi)
+mov selector_if1,%ebx
+mov $ecx_if1,%edi
+mov (%edi,%ebx,1),%ecx
+mov $edx_if1,%edi
+mov (%edi,%ebx,1),%edx
+mov $esi_if1,%edi
+mov (%edi,%ebx,1),%esi
+mov $esp_if1,%edi
+mov (%edi,%ebx,1),%esp
+mov $ebp_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov $n_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,n
+mov $s_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,s
+mov $f1_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f1
+mov $f2_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f2
+mov $f3_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f3
+mov $f_final_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f_final
+mov $eax_if1,%edi
+mov (%edi,%ebx,1),%eax
+mov $ebx_if1,%edi
+mov (%edi,%ebx,1),%ebx
+l3:
+
+mov $ecx_if1,%edi
+mov %ecx, 0(%edi)
+mov $edx_if1,%edi
+mov %edx, 0(%edi)
+mov $esi_if1,%edi
+mov %esi, 0(%edi)
+mov $esp_if1,%edi
+mov %esp, 0(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 0(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,0(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,0(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,0(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,0(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,0(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,0(%edi)
+mov $eax_if1,%edi
+mov %eax, 0(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 0(%edi)
+mov $1,if_operand_x
+mov f3, %ebp
+mov %ebp,if_operand_y
+mov $0,%eax
+movb if_operand_x,%al
+movb $4,eq(,%eax,1)
+movb if_operand_y,%al
+movb $0,eq(,%eax,1)
+movb if_operand_x,%al
+mov $0,%ebx
+movb eq(,%eax,1),%bl
+mov %ebx,selector_if1
+mov $eax_if1,%edi
+mov 0(%edi),%eax
+mov $ebx_if1,%edi
+mov 0(%edi),%ebx
+mov $ecx_if1,%edi
+mov %ecx, 4(%edi)
+mov $edx_if1,%edi
+mov %edx, 4(%edi)
+mov $esi_if1,%edi
+mov %esi, 4(%edi)
+mov $esp_if1,%edi
+mov %esp, 4(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 4(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,4(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,4(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,4(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,4(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,4(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,4(%edi)
+mov $eax_if1,%edi
+mov %eax, 4(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 4(%edi)
+mov $ecx_if1,%edi
+mov 0(%edi),%ecx
+mov $edx_if1,%edi
+mov 0(%edi),%edx
+mov $esi_if1,%edi
+mov 0(%edi),%esi
+mov $esp_if1,%edi
+mov 0(%edi),%esp
+mov $ebp_if1,%edi
+mov 0(%edi),%ebp
+mov $n_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,n
+mov $s_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,s
+mov $f1_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f1
+mov $f2_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f2
+mov $f3_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f3
+mov $f_final_if1,%edi
+mov 0(%edi),%ebp
+mov %ebp,f_final
+mov $eax_if1,%edi
+mov 0(%edi),%eax
+mov $ebx_if1,%edi
+mov 0(%edi),%ebx
+mov %ebx,s
+mov f3,%ebp
+cmp $1,f3
+je apel_exit
+return_exit:
+mov $0,f3
+mov $ecx_if1,%edi
+mov %ecx, 0(%edi)
+mov $edx_if1,%edi
+mov %edx, 0(%edi)
+mov $esi_if1,%edi
+mov %esi, 0(%edi)
+mov $esp_if1,%edi
+mov %esp, 0(%edi)
+mov $ebp_if1,%edi
+mov %ebp, 0(%edi)
+mov $n_if1,%edi
+mov n, %ebp
+mov %ebp,0(%edi)
+mov $s_if1,%edi
+mov s, %ebp
+mov %ebp,0(%edi)
+mov $f1_if1,%edi
+mov f1, %ebp
+mov %ebp,0(%edi)
+mov $f2_if1,%edi
+mov f2, %ebp
+mov %ebp,0(%edi)
+mov $f3_if1,%edi
+mov f3, %ebp
+mov %ebp,0(%edi)
+mov $f_final_if1,%edi
+mov f_final, %ebp
+mov %ebp,0(%edi)
+mov $eax_if1,%edi
+mov %eax, 0(%edi)
+mov $ebx_if1,%edi
+mov %ebx, 0(%edi)
+mov selector_if1,%ebx
+mov $ecx_if1,%edi
+mov (%edi,%ebx,1),%ecx
+mov $edx_if1,%edi
+mov (%edi,%ebx,1),%edx
+mov $esi_if1,%edi
+mov (%edi,%ebx,1),%esi
+mov $esp_if1,%edi
+mov (%edi,%ebx,1),%esp
+mov $ebp_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov $n_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,n
+mov $s_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,s
+mov $f1_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f1
+mov $f2_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f2
+mov $f3_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f3
+mov $f_final_if1,%edi
+mov (%edi,%ebx,1),%ebp
+mov %ebp,f_final
+mov $eax_if1,%edi
+mov (%edi,%ebx,1),%eax
+mov $ebx_if1,%edi
+mov (%edi,%ebx,1),%ebx
+l_final:
+jmp main
+
+apel_exit:
+mov $1,%eax
+mov $0,%ebx
+int $0x80
+jmp return_exit
