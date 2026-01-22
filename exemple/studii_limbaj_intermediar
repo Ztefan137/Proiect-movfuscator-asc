@@ -24,3 +24,55 @@ store %eax,0,1
 update %eax,1
 
 
+implementarea_bucatii de verificare a egalitatii:
+numerele de comaparat sunt puse in prealabil in if_operand_x si if_opeerand_y prin intermediul operatiei load_operand_x/y sufixate corespunzator
+registrii distrusi: %eax,%ebx
+
+mov $0,%eax
+movb if_operand_x,%al
+movb $0,eq(,%eax,1)
+movb if_operand_y,%al
+movb $0,eq(,%eax,1)
+movb if_operand_x,%al
+mov $0,%ebx
+movb eq(,%eax,1),%bl
+mov %eax,selector_if
+
+blocul de mai sus trebuie adaptat pt toate tipurile de comparatii ca sa functioneze ca jumpul conditional
+ce e in selector_if dupa efectuarea blocului de comparatie: 0<-fals 4<-adevar
+
+astfel structura ifului ramane la fel doar se schimba linia de comparatie
+
+referitor la prima iteratie de translatare a codului de mai sus, o a doua e mai jos:
+
+cross_save %esi,%edi
+store %eax,0,1
+store %ebx,0,1
+mov $1,%eax
+store %eax,4,1
+store %ebx,4,1
+load %eax,0,1
+load %ebx,4,1
+mov $0,%eax
+store %eax,0,1
+store %ebx,4,1
+
+load_operand_x a
+load_operand_y b
+
+cmp_eq 1
+#in acest moment sunt distrusi %eax,%ebx de aceea ii vom restaura ca si cum ar fi fost in if chiar daca nu au fost
+
+update %edi,1
+update %esi,1
+update %eax,1
+update %ebx,1
+
+ca o ultima observatie care sa sumarizeze ce am zis pana acum operatiile de store si load distrug %edi, iar operatia de comparare distruge %eax si %ebx
+%esi se salveaza ca o consecinta a faptului ca trebuie salvat %edi, fiind necesar inca un registru pentru a se  face o adresare in memorie
+
+
+
+
+
+
