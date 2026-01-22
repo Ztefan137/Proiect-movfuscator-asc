@@ -69,7 +69,20 @@ update %eax,1
 update %ebx,1
 
 ca o ultima observatie care sa sumarizeze ce am zis pana acum operatiile de store si load distrug %edi, iar operatia de comparare distruge %eax si %ebx
-%esi se salveaza ca o consecinta a faptului ca trebuie salvat %edi, fiind necesar inca un registru pentru a se  face o adresare in memorie
+%esi se salveaza ca o consecinta a faptului ca trebuie salvat %edi, fiind necesar inca un registru pentru a se face o adresare in memorie
+
+iteratie 3 a codului:
+
+in loc de instructiunea cross_store %edi,%esi vom folosi stiva
+astfel inceputul unui if va arata asa
+
+push %edi
+store %eax 0,1
+store %ebx 0,1
+pop %edi
+.... restul ramane la fel
+
+update asupra iteratiei 3 e o idee proasta
 
 
 
