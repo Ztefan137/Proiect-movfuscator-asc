@@ -5,12 +5,23 @@ main:
   mov $0,%eax
   mov $1,%ebx
   cmp %eax,%ebx
-  je egale
+  jbe egale
 diferite:
-  mov $1,%ecx
-egale:
   mov $0,%ecx
+  jmp exit
+egale:
+  mov $1,%ecx
 exit:
-  mov $1,%eax
-  mov $0,%ebx
+  mov $0,%eax
+  mov $1,%ebx
+  cmp %eax,%ebx
+  jne egale2
+diferite2:
+  mov $0,%ecx
+  jmp exit2
+egale2:
+  mov $1,%ecx
+exit2:
+  mov $0,%eax
+  xor %ebx,%ebx
   int $0x80
