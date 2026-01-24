@@ -1,3 +1,4 @@
+Ecaterina+Luiza:
 -redactat documentatie
 -implementat impartire in blocuri foruri
 -!!!!gandit efectuarea comparatiilor de forma a<b
@@ -5,11 +6,11 @@
 -completare json
 -adaugare logica suplimentara pentru excepturile din json
 
-
--implementat apel de functii vide # pt astea 2 avem solutia temporara a jumpurilor in zonele lor dedicate de program 
--implementat apeluri de sistem vide # aceasta este o solutie temporara dar in situatia in care nu gasim o rezolvare mai buna va ramane definitiva
-
+Stefan:
 -reparat zdravan partea de foruri
 -implementat la foruri ceva de anvergura la 2 pointers
 -gandit mecanismul de cross saving pt ebp si edi
+-cum salvam vectori
 
+Valentin:
+-implementat preprocesare
