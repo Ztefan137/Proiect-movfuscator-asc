@@ -1,11 +1,10 @@
 def preprocess(input, output):
     line=0 #nr liniei, debugging purposes
-    currlab="" #etichete...
+    currlab="" #ultima eticheta
     for l in input.readlines():
         
         if(len(l.strip())==0):
             output.write("\n")
-            mmn=""
             continue
         line+=1
         if(len(l.strip().split())):
@@ -23,7 +22,7 @@ def preprocess(input, output):
             output.write("\tjne " + currlab + "\n")
 
         #temp_eax, ebx, ecx, edx... din movfuscat 
-        elif(mmn=="test"): #CHECK TEST INSTR
+        elif(mmn=="test"): #TEST INSTR CHECK
             tmp=l.strip().split(" ",1)
             
             #print(tmp,line)
