@@ -7,12 +7,6 @@ Croitoru Luiza gr.151
 Denciu Ștefan gr.151
 Porumb Valentin gr.151
 Ștefănescu Ecaterina gr.151
-### Etapa 1 de compilare
 
-### Etapa 2 de compilare
-
-### Etapa 3 de compilare
-
-### Etapa 1 de translatare
-
-### Concluzii si observații
+###Detalii despre proiect
+Detalii despre implementarea/utilizarea proiectului se găsesc în fișierul detalii.docx. Codurile din laboratoare se găsesc în folderul input/output.
