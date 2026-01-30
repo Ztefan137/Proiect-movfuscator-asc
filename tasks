@@ -1,16 +1,13 @@
 Ecaterina+Luiza:
 -redactat documentatie
 -implementat impartire in blocuri foruri
--!!!!gandit efectuarea comparatiilor de forma a<b
--implementat scrierea lookuptableurilor
--completare json
--adaugare logica suplimentara pentru excepturile din json
+-comparatii
+-reparat div
+-implementat inc,dec
 
 Stefan:
--reparat zdravan partea de foruri
--implementat la foruri ceva de anvergura la 2 pointers
--gandit mecanismul de cross saving pt ebp si edi
 -cum salvam vectori
+-functii
 
-Valentin:
--implementat preprocesare
+Stefan+Ecaterina:
+-reparat foruri
