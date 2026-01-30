@@ -1,7 +1,3 @@
-
-#cand citesti prima oara acest cod citeste-l de la final la inceput (are mai mult sens asa)
-
-
 #-----------------------------#
 #functii de utilitate generala#
 #-----------------------------#
@@ -13,7 +9,7 @@ def get_line_tokens(line): #functie de utilitate generala
 def get_line_type(line): #functie de utilitate generala
     keyword=get_line_tokens(line)[0]
     arithmetic_keywords=["add","sub","mul","imul","div","idiv","inc","dec"]
-    flow_keywords=["jmp","jb","jbe","ja","jae","jl","jle","jg","jge","je","jne","loop"]
+    flow_keywords=["jmp","jb","jbe","ja","jae","jl","jle","jg","jge","je","jne"]
     shift_keywords=["shr","shl","sar","sal"]
     logical_keywords=["and","or","xor","not"]
     decisional_keywords=["cmp","test"]
@@ -113,10 +109,13 @@ def partition_code_blocks2(loops,min_index=0,max_index=None): #functie care treb
 
     return blocks
 
-def analyze_loop_structure(input): #functie care va fi folosita candva
-    #functie care determina adancimea imbricarilor de foruri
+def analyze_loop_structure(asm_lines): #functie care va fi folosita candva
+    #functie care determina adancimea imbricarilor de foruri din pacate nu cred ca va mai exista suport pt foruri imbricate
     print("step 1.1")
-    return 1
+    jumps=get_back_jumps(asm_lines)
+    if len(jumps) >= 1:
+        return 1
+    return 0
 def partition_code_blocks(asm_lines): #va fi rescrisa la un moment dat ca sa tina cont de foruri imbricate (Valentin)
     print("step 1.2.1")
     back_jumps=get_back_jumps(asm_lines)
@@ -151,7 +150,7 @@ def get_exit_conditions(asm_lines,code_blocks):
                     if get_line_type(line) == "control flow":
                         if asm_lines.index(f"{get_line_tokens(line)[1]}:")>code_blocks[block][2]:
                             exit_conditions[block].append(asm_lines.index(line))
-
+    print(exit_conditions)
     return exit_conditions
 def define_flags(asm_lines,output,code_blocks):
     #functie care scrie flagurile necesare pt executarea secventiala a blocrilor de cod
@@ -215,6 +214,8 @@ def add_labels(asm_lines,output,code_blocks,loop_exits):
             #nu vrem etichete
             #in cazul in care avem loopuri nu vrem conditia
             #de semenea daca e loop mai trebuie sa rescriem conditia inainte de actualizarea flagurilor
+
+            print(loop_exits)
             loop_condtion_line_idx=0
             if code_blocks[block][0] == "loop": 
                 loop_condtion_line_idx=loop_exits[block][0]
@@ -380,6 +381,10 @@ def define_if_variables(asm_lines,output,datas,depth):
     output.write(f"if_operand_x: .long 0\n")
     output.write(f"if_operand_y: .long 0\n")
 
+    output.write("edi_saving: .long 0\n")
+    output.write("ebp_saving: .long 0\n")
+    output.write("eax_saving: .long 0\n")
+
     output.write(f".bss\n")
     output.write(f"eq: .skip 256\n")
 
@@ -387,6 +392,7 @@ def define_if_variables(asm_lines,output,datas,depth):
     idx_main=asm_lines.index("main:")
     for i in range(idx_text,idx_main):
         output.write(f"{asm_lines[i]}\n")
+
 
 def get_data(asm_lines,registers):
     prefix=""
@@ -443,6 +449,57 @@ def write_system_calls(output):
     output.write(f"syscall_section:\n")
     output.write(f"int $0x80\n")
     output.write(f"jmp return_syscall\n")
+
+def write_data_section(asm_lines,output,bss_index):
+    # Write everything BEFORE .text (the .data section)
+    for i in range(bss_index):
+        output.write(f"{asm_lines[i]}\n")
+    
+    # Inject our necessary scratchpad variables
+    output.write("\n# --- Operational Scratchpad ---\n")
+    output.write("temp_eax: .long 0\n")
+    output.write("temp_ebx: .long 0\n")
+    output.write("temp_ecx: .long 0\n")
+    output.write("temp_edx: .long 0\n")
+    output.write("temp_eax_buf: .long 0\n")
+    output.write("temp_src_buf: .long 0\n")
+    output.write("temp_dest_buf: .long 0\n")
+    output.write("temp_src_buf_2: .long 0\n")
+    output.write("temp_dest_buf_2: .long 0\n")
+    output.write("temp_res: .long 0\n")
+    output.write("current_carry: .byte 0\n") 
+    output.write("temp_c1: .byte 0\n")
+    output.write("temp_c2: .byte 0\n")
+    output.write("prod_low: .byte 0\n")
+    output.write("prod_high: .byte 0\n")
+    output.write("div_divisor: .long 0\n")
+    output.write("div_quotient: .long 0\n")
+    output.write("div_remainder: .long 0\n")
+    output.write("div_temp_res: .long 0\n")
+    output.write("div_mask: .long 0\n")
+    output.write("div_inv_mask: .long 0\n")
+    output.write("div_temp_a: .long 0\n")
+    output.write("is_negative: .byte 0\n") 
+
+def write_lut():
+    print("nothing here yet")
+def write_main(asm_lines,output,text_index):
+    flag=None
+    for i in range(text_index, len(asm_lines)):
+        line=asm_lines[i]
+        if line != "":
+            if get_line_type(line) == "label":
+                print (line)
+                if line[0] == "l":
+                    print (line[0])
+                    if line[1].isdigit():
+                        flag=line[1:-1]
+            if get_line_tokens(line)[0] == "int" and flag != None:
+                    output.write(f"syscall f{flag}\n")
+            else:
+                output.write(f"{line}\n")
+    if flag != None:
+        write_system_calls(output)
 
 
 def generate_and_tables(output):
@@ -559,6 +616,40 @@ def generate_shr_tables(output):
         output.write(f"\n.align 4\nSHR_B{pos}_PTR:\n")
         for i in range(256):
             output.write(f"    .long SHR_B{pos}_LUT + {i * 128}\n")
+def generate_mul_tables(output):
+    output.write("\n# --- MUL LOOKUP TABLES ---\n")
+    
+    # 1. Generăm rândurile pentru MUL_LOW
+    for i in range(256):
+        results = [str((i * j) % 256) for j in range(256)]
+        output.write(f"MUL_L_ROW_{i}: .byte {','.join(results)}\n")
+    
+    # 2. Tabelul de pointeri pentru MUL_LOW
+    output.write(".align 4\nMUL_LOW_PTR:\n")
+    for i in range(256):
+        output.write(f"    .long MUL_L_ROW_{i}\n")
+
+    # 3. Generăm rândurile pentru MUL_HIGH
+    for i in range(256):
+        results = [str((i * j) // 256) for j in range(256)]
+        output.write(f"MUL_H_ROW_{i}: .byte {','.join(results)}\n")
+    
+    # 4. Tabelul de pointeri pentru MUL_HIGH
+    output.write(".align 4\nMUL_HIGH_PTR:\n")
+    for i in range(256):
+        output.write(f"    .long MUL_H_ROW_{i}\n")
+
+def generate_div_support_tables(output):
+    # 1. Tabel bit de semn
+    output.write("IS_NEG_BYTE_LUT: .byte " + ",".join(["1" if i >= 128 else "0" for i in range(256)]) + "\n")
+    
+    # 2. Tabel masca (pozitiv -> toti bitii 1, negativ -> toti 0)
+    # Atentie: Inversam indexul in functie de cum ai logica in JSON
+    output.write(".align 4\nSIGN_TO_MASK_LUT: .long 0xFFFFFFFF, 0x00000000\n")
+
+    # 3. Tabel MSB (pentru shift-ul combinat)
+    output.write("GET_MSB_LUT: .byte " + ",".join(["1" if i >= 128 else "0" for i in range(256)]) + "\n")
+
 
 #----------------------------------------------------#
 #functiile corespunzatoare celor 3 etape de compilare#
@@ -566,38 +657,29 @@ def generate_shr_tables(output):
 def loop_handling(input,output):
     asm_lines=[line.strip() for line in input.readlines()] #extragerea liniilor din fisierul de la pasul anterior
     for_depth=analyze_loop_structure(asm_lines) #returneaza un tuplu cu informatii
-    code_blocks=partition_code_blocks(asm_lines) # dictionar cu loopuri(vezi idei proiect pt detalii)
-    print(code_blocks) #print de debug
-    loop_exits=get_exit_conditions(asm_lines,code_blocks)
-    define_flags(asm_lines,output,code_blocks) # formatare sectiune .data cu fi-urile
-    add_labels(asm_lines,output,code_blocks,loop_exits) # adauga labelurile + codul fara etichete
-    output.write("jmp main\n") # scrie jumpul principal
-    #in acest moment ar trebui sa avem cod care ruleaza in x86 in mod iterativ
+    if for_depth>=1:
+        code_blocks=partition_code_blocks(asm_lines) # dictionar cu loopuri(vezi idei proiect pt detalii)
+        print(code_blocks) #print de debug
+        loop_exits=get_exit_conditions(asm_lines,code_blocks)
+        define_flags(asm_lines,output,code_blocks) # formatare sectiune .data cu fi-urile
+        add_labels(asm_lines,output,code_blocks,loop_exits) # adauga labelurile + codul fara etichete
+        output.write("jmp main\n") # scrie jumpul principal
+    else:
+        for line in asm_lines:
+            output.write(f"{line}\n")
+    #dupa aceasta etapa codul este inca x86 standard, dar totul ruleaza intr-o bucla mare in mod iterativ
 
 def decisional_handling(input,output):
     asm_lines=[line.strip() for line in input.readlines()] #extragerea liniilor din fisierul de la pasul anterior
-    #identificare de structuri decizionale(branchuri conditii cmp-uri test-uri etc.)
-    #decisional_structures=get_decisional_branches(asm_lines)
-    #identificarea variabilelor schimbate in blocurile decizionale
-    #changed_data=get_changed_data(asm_lines,decisional_structures)
-    #define if storage data
-    #define_if_variables()
-    ifs=get_decisional_branches(asm_lines)
-    print(ifs)
-    define_if_variables(asm_lines,output,get_data(asm_lines=asm_lines,registers=False),2)
-    write_ifs(asm_lines,output,ifs)
+    ifs=get_decisional_branches(asm_lines) #crearea unui arbore care reprezinta ifurile
+    print(ifs) #debug
+    define_if_variables(asm_lines,output,get_data(asm_lines=asm_lines,registers=False),2) #scrierea in .data 
+    write_ifs(asm_lines,output,ifs) #rescrierea mainului
 
-    #pasi
-    #impartire in ifuri crearea structurii de date care retine impartirea branchurilor ifurilor
-    #analiza fiecarui if pt date teoretic optionala dar recomandata ca sa nu umplem cu foarte multe linii degeaba
-    #movfuscat ifurile propriu zis and we re happy
+    #dupa aceasta etapa codul contine doar jumpuri absolut necesare(cel final,apeluri de sistem,apeluri de functii), cu instructiuni scrise in isa intermediar
 
 def operational_handling(input,output):
     asm_lines=[line.strip() for line in input.readlines()] #extragerea liniilor din fisierul de la pasul anterior
-    #define_lookup_tables(asm_lines,output)
-    #parse_operations(asm_lines,output)
-
-    print(f"DEBUG: Processing {len(asm_lines)} lines...")
 
     needs_and_lut = False
     needs_or_lut = False 
@@ -606,6 +688,8 @@ def operational_handling(input,output):
     needs_not_lut = False
     needs_shl_lut = False
     needs_shr_lut = False
+    needs_mul_lut = False
+    needs_div_lut = False
 
     for line in asm_lines:
         clean_line = line.lower().replace(",", " ")
@@ -614,10 +698,24 @@ def operational_handling(input,output):
         
         instr = tokens[0]
 
-        if instr in ["shl", "shll", "sal", "sall"]:
+        if instr in ["div", "divl", "idiv"]:
+            needs_div_lut = True
+            needs_add_lut = True
+            needs_not_lut = True
+            needs_and_lut = True
+            needs_or_lut = True
+        elif instr in ["shl", "shll", "sal", "sall"]:
             needs_shl_lut = True
-            needs_add_lut = True # SHL combină rezultatele prin ADD
-            needs_or_lut = True  # ADD are nevoie de OR
+            needs_add_lut = True
+            needs_or_lut = True
+        elif instr in ["shr", "shrl"]:
+            needs_shr_lut = True
+            needs_add_lut = True
+            needs_or_lut = True
+        elif instr in ["mul", "mull"]: # Detecție MUL
+            needs_mul_lut = True
+            needs_add_lut = True
+            needs_or_lut = True
         elif instr == "and":
             needs_and_lut = True
         elif instr == "or":
@@ -628,18 +726,12 @@ def operational_handling(input,output):
             needs_add_lut = True
             needs_or_lut = True 
         elif instr in ["sub", "subl"]:
-            print("DEBUG: Found SUB! Setting flags...")
             needs_add_lut = True 
             needs_or_lut = True  
             needs_not_lut = True 
         elif instr == "not":
             needs_not_lut = True
-        elif instr in ["shr", "shrl"]:
-            needs_shr_lut = True
-            needs_add_lut = True
-            needs_or_lut = True
 
-    # 2. Find .text section
     text_index = -1
     for i, line in enumerate(asm_lines):
         if ".bss" in line:
@@ -647,28 +739,15 @@ def operational_handling(input,output):
             print(f"DEBUG: Found .text at line {i}")
             break
     
-    # 3. Handle Writing
     if text_index != -1:
-        # Write everything BEFORE .text (the .data section)
-        for i in range(text_index):
-            output.write(f"{asm_lines[i]}\n")
-        
-        # Inject our necessary scratchpad variables
-        output.write("\n# --- Operational Scratchpad ---\n")
-        output.write("temp_eax: .long 0\n")
-        output.write("temp_ebx: .long 0\n")
-        output.write("temp_ecx: .long 0\n")
-        output.write("temp_edx: .long 0\n")
-        output.write("temp_src_buf: .long 0\n")
-        output.write("temp_dest_buf: .long 0\n")
-        output.write("temp_src_buf_2: .long 0\n")
-        output.write("temp_dest_buf_2: .long 0\n")
-        output.write("temp_res: .long 0\n")
-        output.write("current_carry: .byte 0\n") 
-        output.write("temp_c1: .byte 0\n")
-        output.write("temp_c2: .byte 0\n")
-
+        write_data_section(asm_lines,output,text_index)
         # Inject the heavy tables
+        if needs_div_lut: 
+            generate_div_support_tables(output)
+        if needs_not_lut: 
+            # Daca nu ai o functie separata, genereaz-o rapid aici:
+            output.write("NOT_LUT: .byte " + ",".join([str(255-i) for i in range(256)]) + "\n")
+
         if needs_and_lut:
             print("DEBUG: Generating AND tables now...")
             generate_and_tables(output)
@@ -691,24 +770,18 @@ def operational_handling(input,output):
         if needs_shr_lut:
             print("DEBUG: Generating 4-position SHR tables...")
             generate_shr_tables(output)
+
+        if needs_mul_lut: 
+            generate_mul_tables(output)
         
-        # Write the .text section and all instructions
-        for i in range(text_index, len(asm_lines)):
-            line=asm_lines[i]
-            if line != "":
-                if get_line_tokens(line)[0] == "int":
-                    flag="f3"
-                    output.write(f"syscall {flag}\n")
-                else:
-                    output.write(f"{line}\n")
-    
-        write_system_calls(output)
+        write_main(asm_lines,output,text_index)
     else:
         print("DEBUG: ERROR - Could not find .text section!")
         # Safety: If no .text, just dump the code
         for line in asm_lines:
             output.write(f"{line}\n")
 
+    #dupa aceasta etapa codul are toate operatiile necesare pentru a fi translatat 1 la 1 linie cu linie in movuri
 
 #--------------------#
 #functia de compilare#
