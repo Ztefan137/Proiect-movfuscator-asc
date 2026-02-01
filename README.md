@@ -1,7 +1,7 @@
 # Movfuscator
 
 ### Numele echipei
-
+It moved us
 ### Membri echipei
 Croitoru Luiza gr.151
 Denciu Ștefan gr.151
