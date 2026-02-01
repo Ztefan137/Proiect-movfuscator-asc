@@ -69,6 +69,73 @@ def get_back_jumps(asm_lines):
                 if label_index < jump_index:
                     back_jumps.append(tuple([label_index,jump_index]))
     return back_jumps
+def get_loops(asm_lines,back_jumps):
+    fors=[]
+    for pair in back_jumps:
+        start_index=pair[0]
+        end_index=pair[1]
+        pointer=start_index
+        while(pointer<=end_index):
+            print("cev")
+import re
+def get_loops(asm_lines):
+    # 1. First pass: Map labels to their line indices
+    labels = {}
+    for idx, line in enumerate(asm_lines):
+        line = line.strip()
+        if not line: continue
+        
+        # Using your logic to identify labels
+        if get_line_type(line) == "label":
+            label_name = get_line_tokens(line)[0].replace(":", "")
+            labels[label_name] = idx
+
+    raw_loops = []
+
+    # 2. Second pass: Identify backward jumps
+    for idx, line in enumerate(asm_lines):
+        line = line.strip()
+        if not line or get_line_type(line) != "control flow":
+            continue
+            
+        tokens = get_line_tokens(line)
+        instr = tokens[0].lower()
+        target = tokens[-1] # Target is the last token
+
+        if target in labels:
+            target_idx = labels[target]
+            
+            # Logic: If jump target is before or at the current line, it's a loop
+            if target_idx <= idx:
+                raw_loops.append({
+                    "id": f"loop_{target}",
+                    "start": target_idx,
+                    "end": idx,
+                    "condition_instr": instr,
+                    "lines": asm_lines[target_idx : idx + 1],
+                    "contains": [] # For nesting
+                })
+
+    # 3. Determine Structure (Nesting)
+    # Sort by length descending so we process outer loops first
+    raw_loops.sort(key=lambda x: x['end'] - x['start'], reverse=True)
+    
+    final_structure = []
+    for i, outer in enumerate(raw_loops):
+        is_nested = False
+        for j, potential_parent in enumerate(raw_loops):
+            if i == j: continue
+            # If current loop is inside another loop's range
+            if outer['start'] >= potential_parent['start'] and outer['end'] <= potential_parent['end']:
+                potential_parent['contains'].append(outer['id'])
+                is_nested = True
+                break
+        
+        if not is_nested:
+            final_structure.append(outer)
+
+    return raw_loops if not final_structure else final_structure
+#functii vechi
 def get_exit_condition(loop,asm_lines):
     for line_index in range(loop[0],loop[1]):
         line=asm_lines[line_index]
@@ -150,7 +217,7 @@ def get_exit_conditions(asm_lines,code_blocks):
                     if get_line_type(line) == "control flow":
                         if asm_lines.index(f"{get_line_tokens(line)[1]}:")>code_blocks[block][2]:
                             exit_conditions[block].append(asm_lines.index(line))
-    print(exit_conditions)
+    #print(exit_conditions)
     return exit_conditions
 def define_flags(asm_lines,output,code_blocks):
     #functie care scrie flagurile necesare pt executarea secventiala a blocrilor de cod
@@ -181,7 +248,7 @@ def define_flags(asm_lines,output,code_blocks):
         output.write(f"{asm_lines[line_index]}\n")
         line_index+=1
     flags=[key for key in code_blocks]
-    print(flags)
+    #print(flags)
     flag_index=0
     for flag in flags:
         if flag_index == 0:
@@ -215,7 +282,7 @@ def add_labels(asm_lines,output,code_blocks,loop_exits):
             #in cazul in care avem loopuri nu vrem conditia
             #de semenea daca e loop mai trebuie sa rescriem conditia inainte de actualizarea flagurilor
 
-            print(loop_exits)
+            #print(loop_exits)
             loop_condtion_line_idx=0
             if code_blocks[block][0] == "loop": 
                 loop_condtion_line_idx=loop_exits[block][0]
@@ -240,7 +307,6 @@ def add_labels(asm_lines,output,code_blocks,loop_exits):
 #------------------------------#
 
 def run_pointers(asm_lines,idx):
-    #imbunatatit functia asta
     p1=idx+1
     p2=asm_lines.index(f"{get_line_tokens(asm_lines[idx])[1]}:")
     false_lines=[]
@@ -314,7 +380,7 @@ def write_ifs(asm_lines,output,if_list):
     write_ifs_helper(asm_lines,output,if_list,1)
 def write_comparation(asm_lines,output,condition,depth):
     output.write(f"cmp_{condition} {depth}\n")
-    memory_copying(output,2,["%eax","%ebx"],depth)
+    memory_copying(output,2,[(f"%eax",1),(f"%ebx",1)],depth)
 def write_operand(output,xory,operand):
     if "$" in operand:
         output.write(f"load_operand_{xory}_i {operand}\n")
@@ -325,41 +391,71 @@ def write_operand(output,xory,operand):
 def write_selector(output,depth):
     output.write(f"prepare_selector {depth}\n")
 def memory_copying(output,phase,data,depth): #functie auxiliara care se ocupa de a scrie loadurile si storeurile
+    #de actualizat cu vectori
     if phase == 0:
         for element in data:
-            if element[0] == "%":
-                output.write(f"storer {element},0,{depth}\n")
+            length=element[1]
+            element=element[0]
+            if length == 1:
+                if element[0] == "%":
+                    output.write(f"storer {element},0,{depth}\n")
+                else:
+                    output.write(f"storev {element},0,{depth}\n")
             else:
-                output.write(f"storev {element},0,{depth}\n")
-
+                for i in range(length):
+                    output.write(f"storel {element},0,{depth},{i*4},{length}\n")
     if phase == 1:
         for element in data:
-            if element[0] == "%":
-                output.write(f"storer {element},4,{depth}\n")
+            length=element[1]
+            element=element[0]
+            if length == 1:
+                if element[0] == "%":
+                    output.write(f"storer {element},4,{depth}\n")
+                else:
+                    output.write(f"storev {element},4,{depth}\n")
             else:
-                output.write(f"storev {element},4,{depth}\n")
+                for i in range(length):
+                    output.write(f"storel {element},4,{depth},{i*4},{length}\n")
+
     if phase == 2:
         for element in data:
-            if element[0] == "%":
-                output.write(f"loadr {element},0,{depth}\n")
+            length=element[1]
+            element=element[0]
+            if length == 1:
+                if element[0] == "%":
+                    output.write(f"loadr {element},0,{depth}\n")
+                else:
+                    output.write(f"loadv {element},0,{depth}\n")
             else:
-                output.write(f"loadv {element},0,{depth}\n")
+                for i in range(length):
+                    output.write(f"loadl {element},0,{depth},{i*4},{length}\n")
+
     if phase == 3:
         for element in data:
-            if element[0] == "%":
-                output.write(f"storer {element},0,{depth}\n")
+            length=element[1]
+            element=element[0]
+            if length == 1:
+                if element[0] == "%":
+                    output.write(f"storer {element},0,{depth}\n")
+                else:
+                    output.write(f"storev {element},0,{depth}\n")
             else:
-                output.write(f"storev {element},0,{depth}\n")
+                for i in range(length):
+                    output.write(f"storel {element},0,{depth},{i*4},{length}\n")
+
     if phase == 4:
         for element in data:
-            if element[0] == "%":
-                output.write(f"updater {element},{depth}\n")
+            length=element[1]
+            element=element[0]
+            if length == 1:
+                if element[0] == "%":
+                    output.write(f"updater {element},{depth}\n")
+                else:
+                    output.write(f"updatev {element},{depth}\n")
             else:
-                output.write(f"updatev {element},{depth}\n")
+                for i in range(length):
+                    output.write(f"updatel {element},{depth},{i*4},{length}\n")
 
-
-def get_changed_data():
-    print("step 2.2")
 
 def define_if_variables(asm_lines,output,datas,depth):
     print("step 2.3")
@@ -371,7 +467,14 @@ def define_if_variables(asm_lines,output,datas,depth):
     output.write("\n")
     for i in range(1,depth+1):
         for data in datas:
-            output.write(f"{data}_if{i}: .long 0,0\n")
+            if data[1]>1:
+                print("vertex")
+                output.write(f"{data[0]}_if{i}: .long ")
+                for _ in range(2*data[1]):
+                    output.write(f"0,")
+                output.write(f"\n")
+            else:
+                output.write(f"{data[0]}_if{i}: .long 0,0\n")
         output.write("\n")
     for i in range(1,depth+1):
         output.write(f"selector_if{i}: .long 0\n")
@@ -393,6 +496,10 @@ def define_if_variables(asm_lines,output,datas,depth):
     for i in range(idx_text,idx_main):
         output.write(f"{asm_lines[i]}\n")
 
+def get_variable_length(line):
+    data=line.split(":")[1].split(",")
+    return len(data)
+    print(data)
 
 def get_data(asm_lines,registers):
     prefix=""
@@ -400,24 +507,38 @@ def get_data(asm_lines,registers):
         prefix="%"
     temporary_disabled=[f"{prefix}edi"]
     data=[f"{prefix}ecx",f"{prefix}edx",f"{prefix}esi",f"{prefix}esp",f"{prefix}ebp"]
+    data=[(data_piece,1) for data_piece in data]
     idx_data=asm_lines.index(".data")
     idx_text=asm_lines.index(".text")
     variables=[]
     special_registers=[f"{prefix}eax",f"{prefix}ebx"]
     for i in range(idx_data,idx_text+1):
         if get_line_type(asm_lines[i]) == "label":
-            variables.append(get_line_tokens(asm_lines[i])[0][:-1])
+            #cod care determina lungimea
+            length=get_variable_length(asm_lines[i])
+            variables.append((get_line_tokens(asm_lines[i])[0][:-1],length))
     for variable in variables:
         data.append(variable)
     for special_register in special_registers:
-        data.append(special_register)
+        data.append((special_register,1))
     return data
+
+def analyze_if_depth(ifs,depth):
+    ok=0
+    max_depth=0
+    for line in ifs:
+        if isinstance(line,tuple):
+            ok=1
+            max_depth=max(max_depth,max(analyze_if_depth(line[0],depth+1),analyze_if_depth(line[1],depth+1)))
+    if ok == 0:
+        return depth
+    else:
+        return max_depth
 
 #-------------------------------#
 #functii pt operational_handling#
 #-------------------------------#
 
-#face Ecaterina
 def define_lookup_tables(asm_lines,output):
     line_index=0
     while asm_lines[line_index] != ".bss":
@@ -450,6 +571,14 @@ def write_system_calls(output):
     output.write(f"int $0x80\n")
     output.write(f"jmp return_syscall\n")
 
+def write_f_calls(output,function_list):
+    print("step 3.5")
+    for function in function_list:
+        output.write("\n")
+        output.write(f"{function}call_section:\n")
+        output.write(f"call printf\n")
+        output.write(f"jmp return_{function}call\n")
+
 def write_data_section(asm_lines,output,bss_index):
     # Write everything BEFORE .text (the .data section)
     for i in range(bss_index):
@@ -480,27 +609,36 @@ def write_data_section(asm_lines,output,bss_index):
     output.write("div_inv_mask: .long 0\n")
     output.write("div_temp_a: .long 0\n")
     output.write("is_negative: .byte 0\n") 
+    output.write("NOT_LUT: .byte " + ",".join([str(255-i) for i in range(256)]) + "\n")
+    output.write(".align 4\nVAL_TO_OFFSET_LUT: .long 0, 4\n")
+    output.write("IS_ZERO_LUT: .byte 1, " + ",".join(["0"] * 255) + "\n")
+    non_zero_values = ["0"] + ["1"] * 255
+    output.write(f"NON_ZERO_LUT: .byte {','.join(non_zero_values)}\n")
 
 def write_lut():
     print("nothing here yet")
+
 def write_main(asm_lines,output,text_index):
     flag=None
+    function_list=[]
     for i in range(text_index, len(asm_lines)):
         line=asm_lines[i]
         if line != "":
             if get_line_type(line) == "label":
-                print (line)
                 if line[0] == "l":
-                    print (line[0])
                     if line[1].isdigit():
                         flag=line[1:-1]
             if get_line_tokens(line)[0] == "int" and flag != None:
                     output.write(f"syscall f{flag}\n")
+            elif get_line_tokens(line)[0] == "call" and flag != None:
+                    output.write(f"fcall f{flag},{get_line_tokens(line)[1]}\n")
+                    if get_line_tokens(line)[1] not in function_list:
+                        function_list.append(get_line_tokens(line)[1])
             else:
                 output.write(f"{line}\n")
     if flag != None:
         write_system_calls(output)
-
+        write_f_calls(output,function_list)
 
 def generate_and_tables(output):
     output.write("\n# --- AND LOOKUP TABLES ---\n")
@@ -656,10 +794,11 @@ def generate_div_support_tables(output):
 #----------------------------------------------------#
 def loop_handling(input,output):
     asm_lines=[line.strip() for line in input.readlines()] #extragerea liniilor din fisierul de la pasul anterior
-    for_depth=analyze_loop_structure(asm_lines) #returneaza un tuplu cu informatii
-    if for_depth>=1:
+    for_depth=analyze_loop_structure(asm_lines) #returneaza adancimea forurilor; in cazul implementarii noastre limitate 0 sau 1
+    if for_depth>=1: #verificam daca avem foruri ca sa merite tot "deranjul" de la secventializare
         code_blocks=partition_code_blocks(asm_lines) # dictionar cu loopuri(vezi idei proiect pt detalii)
-        print(code_blocks) #print de debug
+        #print(code_blocks) #print de debug
+        print(get_loops(asm_lines))
         loop_exits=get_exit_conditions(asm_lines,code_blocks)
         define_flags(asm_lines,output,code_blocks) # formatare sectiune .data cu fi-urile
         add_labels(asm_lines,output,code_blocks,loop_exits) # adauga labelurile + codul fara etichete
@@ -672,8 +811,8 @@ def loop_handling(input,output):
 def decisional_handling(input,output):
     asm_lines=[line.strip() for line in input.readlines()] #extragerea liniilor din fisierul de la pasul anterior
     ifs=get_decisional_branches(asm_lines) #crearea unui arbore care reprezinta ifurile
-    print(ifs) #debug
-    define_if_variables(asm_lines,output,get_data(asm_lines=asm_lines,registers=False),2) #scrierea in .data 
+    #print(get_data(asm_lines,registers=False))
+    define_if_variables(asm_lines,output,get_data(asm_lines=asm_lines,registers=False),analyze_if_depth(ifs,0)) #scrierea in .data 
     write_ifs(asm_lines,output,ifs) #rescrierea mainului
 
     #dupa aceasta etapa codul contine doar jumpuri absolut necesare(cel final,apeluri de sistem,apeluri de functii), cu instructiuni scrise in isa intermediar
@@ -736,7 +875,6 @@ def operational_handling(input,output):
     for i, line in enumerate(asm_lines):
         if ".bss" in line:
             text_index = i
-            print(f"DEBUG: Found .text at line {i}")
             break
     
     if text_index != -1:
@@ -749,10 +887,7 @@ def operational_handling(input,output):
             output.write("NOT_LUT: .byte " + ",".join([str(255-i) for i in range(256)]) + "\n")
 
         if needs_and_lut:
-            print("DEBUG: Generating AND tables now...")
             generate_and_tables(output)
-        else:
-            print("DEBUG: AND tables NOT generated (flag was False)")
 
         if needs_or_lut: # Injectare tabela OR
             generate_or_tables(output)
@@ -764,11 +899,9 @@ def operational_handling(input,output):
             generate_add_tables(output)
 
         if needs_shl_lut:
-            print("DEBUG: Generating 4-position SHL tables...")
             generate_shl_tables(output)
 
         if needs_shr_lut:
-            print("DEBUG: Generating 4-position SHR tables...")
             generate_shr_tables(output)
 
         if needs_mul_lut: 
@@ -776,8 +909,6 @@ def operational_handling(input,output):
         
         write_main(asm_lines,output,text_index)
     else:
-        print("DEBUG: ERROR - Could not find .text section!")
-        # Safety: If no .text, just dump the code
         for line in asm_lines:
             output.write(f"{line}\n")
 
