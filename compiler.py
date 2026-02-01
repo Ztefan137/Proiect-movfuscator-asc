@@ -69,73 +69,6 @@ def get_back_jumps(asm_lines):
                 if label_index < jump_index:
                     back_jumps.append(tuple([label_index,jump_index]))
     return back_jumps
-def get_loops(asm_lines,back_jumps):
-    fors=[]
-    for pair in back_jumps:
-        start_index=pair[0]
-        end_index=pair[1]
-        pointer=start_index
-        while(pointer<=end_index):
-            print("cev")
-import re
-def get_loops(asm_lines):
-    # 1. First pass: Map labels to their line indices
-    labels = {}
-    for idx, line in enumerate(asm_lines):
-        line = line.strip()
-        if not line: continue
-        
-        # Using your logic to identify labels
-        if get_line_type(line) == "label":
-            label_name = get_line_tokens(line)[0].replace(":", "")
-            labels[label_name] = idx
-
-    raw_loops = []
-
-    # 2. Second pass: Identify backward jumps
-    for idx, line in enumerate(asm_lines):
-        line = line.strip()
-        if not line or get_line_type(line) != "control flow":
-            continue
-            
-        tokens = get_line_tokens(line)
-        instr = tokens[0].lower()
-        target = tokens[-1] # Target is the last token
-
-        if target in labels:
-            target_idx = labels[target]
-            
-            # Logic: If jump target is before or at the current line, it's a loop
-            if target_idx <= idx:
-                raw_loops.append({
-                    "id": f"loop_{target}",
-                    "start": target_idx,
-                    "end": idx,
-                    "condition_instr": instr,
-                    "lines": asm_lines[target_idx : idx + 1],
-                    "contains": [] # For nesting
-                })
-
-    # 3. Determine Structure (Nesting)
-    # Sort by length descending so we process outer loops first
-    raw_loops.sort(key=lambda x: x['end'] - x['start'], reverse=True)
-    
-    final_structure = []
-    for i, outer in enumerate(raw_loops):
-        is_nested = False
-        for j, potential_parent in enumerate(raw_loops):
-            if i == j: continue
-            # If current loop is inside another loop's range
-            if outer['start'] >= potential_parent['start'] and outer['end'] <= potential_parent['end']:
-                potential_parent['contains'].append(outer['id'])
-                is_nested = True
-                break
-        
-        if not is_nested:
-            final_structure.append(outer)
-
-    return raw_loops if not final_structure else final_structure
-#functii vechi
 def get_exit_condition(loop,asm_lines):
     for line_index in range(loop[0],loop[1]):
         line=asm_lines[line_index]
@@ -154,23 +87,18 @@ def partition_code_blocks2(loops,min_index=0,max_index=None): #functie care treb
     if not loops:
         return [("iter", 0, max_index)] if max_index is not None else []
 
-    # Sort loops by start index
     loops = sorted(loops, key=lambda x: x[0])
 
     blocks = []
     cursor = min_index
 
     for start, end in loops:
-        # Add iterative block before loop
         if cursor < start:
             blocks.append(("iter", cursor, start - 1))
-
-        # Add loop block
         blocks.append(("loop", start, end))
 
         cursor = end + 1
 
-    # Add trailing iterative block if max_index is known
     if max_index is not None and cursor <= max_index:
         blocks.append(("iter", cursor, max_index))
 
@@ -186,13 +114,7 @@ def analyze_loop_structure(asm_lines): #functie care va fi folosita candva
 def partition_code_blocks(asm_lines): #va fi rescrisa la un moment dat ca sa tina cont de foruri imbricate (Valentin)
     print("step 1.2.1")
     back_jumps=get_back_jumps(asm_lines)
-    #back_jumps = loopuri (index_start,index-final)
-    #print(back_jumps)
-    #for jump in back_jumps:
-        #analiza jumpurilor in exteriorul loopului
-        #print(get_exit_condition(jump,asm_lines))
-    code_blocks=partition_code_blocks2(back_jumps,asm_lines.index("main:"),len(asm_lines)-1)
-    #print(code_blocks)
+    code_blocks=partition_code_blocks2(back_jumps,asm_lines.index("main:"),len(asm_lines)-1) #luam rezultatul furnizat de functia de impartire si il punem intr-o forma parsabila
 
     labels={}
     idx=0
@@ -277,12 +199,6 @@ def add_labels(asm_lines,output,code_blocks,loop_exits):
             is_block_loop=code_blocks[block][0] == "loop"
             if is_block_loop:
                 block_lines=asm_lines[code_blocks[block][1]:code_blocks[block][2]]
-            #block lines retine toate liniile de cod ale blocului curent care se scrie
-            #nu vrem etichete
-            #in cazul in care avem loopuri nu vrem conditia
-            #de semenea daca e loop mai trebuie sa rescriem conditia inainte de actualizarea flagurilor
-
-            #print(loop_exits)
             loop_condtion_line_idx=0
             if code_blocks[block][0] == "loop": 
                 loop_condtion_line_idx=loop_exits[block][0]
@@ -301,7 +217,7 @@ def add_labels(asm_lines,output,code_blocks,loop_exits):
             output.write(f"mov $0,f{keys[i][1:]}\n")
             if i+2< len(keys):
                 output.write(f"mov $1,f{keys[i+1][1:]}\n")
-
+                
 #------------------------------#
 #functii pt decisional_handling#
 #------------------------------#
@@ -580,11 +496,9 @@ def write_f_calls(output,function_list):
         output.write(f"jmp return_{function}call\n")
 
 def write_data_section(asm_lines,output,bss_index):
-    # Write everything BEFORE .text (the .data section)
     for i in range(bss_index):
         output.write(f"{asm_lines[i]}\n")
     
-    # Inject our necessary scratchpad variables
     output.write("\n# --- Operational Scratchpad ---\n")
     output.write("temp_eax: .long 0\n")
     output.write("temp_ebx: .long 0\n")
@@ -797,8 +711,6 @@ def loop_handling(input,output):
     for_depth=analyze_loop_structure(asm_lines) #returneaza adancimea forurilor; in cazul implementarii noastre limitate 0 sau 1
     if for_depth>=1: #verificam daca avem foruri ca sa merite tot "deranjul" de la secventializare
         code_blocks=partition_code_blocks(asm_lines) # dictionar cu loopuri(vezi idei proiect pt detalii)
-        #print(code_blocks) #print de debug
-        print(get_loops(asm_lines))
         loop_exits=get_exit_conditions(asm_lines,code_blocks)
         define_flags(asm_lines,output,code_blocks) # formatare sectiune .data cu fi-urile
         add_labels(asm_lines,output,code_blocks,loop_exits) # adauga labelurile + codul fara etichete
@@ -830,7 +742,7 @@ def operational_handling(input,output):
     needs_mul_lut = False
     needs_div_lut = False
 
-    for line in asm_lines:
+    for line in asm_lines: #forul studiaza necesitatea scrierii lookup tableurilor
         clean_line = line.lower().replace(",", " ")
         tokens = clean_line.split()
         if not tokens: continue
@@ -851,7 +763,7 @@ def operational_handling(input,output):
             needs_shr_lut = True
             needs_add_lut = True
             needs_or_lut = True
-        elif instr in ["mul", "mull"]: # Detecție MUL
+        elif instr in ["mul", "mull"]:
             needs_mul_lut = True
             needs_add_lut = True
             needs_or_lut = True
@@ -877,19 +789,17 @@ def operational_handling(input,output):
             text_index = i
             break
     
-    if text_index != -1:
+    if text_index != -1: #scrierea efectiva a lookup tableurilor
         write_data_section(asm_lines,output,text_index)
-        # Inject the heavy tables
         if needs_div_lut: 
             generate_div_support_tables(output)
         if needs_not_lut: 
-            # Daca nu ai o functie separata, genereaz-o rapid aici:
             output.write("NOT_LUT: .byte " + ",".join([str(255-i) for i in range(256)]) + "\n")
 
         if needs_and_lut:
             generate_and_tables(output)
 
-        if needs_or_lut: # Injectare tabela OR
+        if needs_or_lut:
             generate_or_tables(output)
 
         if needs_xor_lut:
