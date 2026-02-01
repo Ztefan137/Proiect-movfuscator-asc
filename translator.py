@@ -30,7 +30,7 @@ def get_line_type(line): #functie de utilitate generala
             if flow_keyword in keyword: 
                 return "control flow"
         for shift_keyword in shift_keywords:
-            if shift_keyword in keyword: 
+            if shift_keyword in keyword:
                 return "shift"
         for logical_keyword in logical_keywords:
             if logical_keyword in keyword: 
@@ -76,7 +76,7 @@ def adapt_template(template,effective_param):
     return new_template
 
 def lower_half_register(register):
-    return f"%al"
+    return f"%cl"
 
 def convert(asm_lines,output,format):
     print("step 4.1")
@@ -91,13 +91,17 @@ def convert(asm_lines,output,format):
             for i in range(len(instructions[instruction_idx]["param"])):
                 param_dict[instructions[instruction_idx]["param"][i]]=params[i]
             try:
-                for i in range(len(instruction["except"])):    
+                for i in range(len(instruction["except"])):
                     exception=instruction["except"][i]
                     new_parameter=exception[0]
                     rule=exception[1]
                     #print(new_parameter,rule)
-                    if rule[0] == 'l':
+                    if rule[0] == '%':
                         param_dict[new_parameter]=param_dict[rule.split("/")[1]][1:]
+                    if rule[0] == 'l':
+                        param_dict[new_parameter]=lower_half_register(param_dict[rule.split("/")[1]])
+                    if rule.split("/")[0] == 'ofv':
+                        param_dict[new_parameter]=str(int(param_dict[rule.split("/")[1]])*int(param_dict[rule.split("/")[2]])+int(param_dict[rule.split("/")[3]]))
             except:
                 print("",end="")
             #print(param_dict)
@@ -108,7 +112,7 @@ def convert(asm_lines,output,format):
 #---------------------------------------------#
 #functia corespunzatoare etapei de translatare#
 #---------------------------------------------#
-def convertion_handling(input,output):
+def conversion_handling(input,output):
     with open("translation_information.json") as f:
         format=json.load(f)
     asm_lines=[line.strip() for line in input.readlines()] #extragerea liniilor din fisierul de la pasul anterior
@@ -116,4 +120,6 @@ def convertion_handling(input,output):
 
 def translate(input,output,step):
     if step == "translation step 1":
-        convertion_handling(input,output)
+        conversion_handling(input,output)
+
+
