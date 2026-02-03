@@ -16,6 +16,13 @@ else:
     if len(arguments)>2:
         flag_keep=arguments[2] == "-i"
 
+    # transformare 0 -> 1
+    step0 = open(input_file, "r")
+    step1 = tempfile.TemporaryFile(mode="w+")
+    preprocessor.preprocess(step0, step1)
+    step0.close()
+    step1.seek(0)
+    
     # transformare 1 -> 2
     step1 = open(input_file, "r")
     step2 = tempfile.TemporaryFile(mode="w+")
@@ -47,3 +54,4 @@ else:
     translator.translate(step4, step5, "translation step 1")
     step4.close()
     step5.close()
+
