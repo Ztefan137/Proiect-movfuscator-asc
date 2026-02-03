@@ -579,31 +579,26 @@ movl %ecx, temp_ecx
 movl %edx, temp_edx
 movl %ebx, temp_dest_buf
 movl %ebx, temp_src_buf
-### Byte 0 ###
 movzbl temp_dest_buf, %ecx
 movl XOR_PTR(,%ecx, 4), %edx
 movzbl temp_src_buf, %ebx
 movb (%edx, %ebx, 1), %al
 movb %al, temp_res
-### Byte 1 ###
 movzbl temp_dest_buf+1, %ecx
 movl XOR_PTR(,%ecx, 4), %edx
 movzbl temp_src_buf+1, %ebx
 movb (%edx, %ebx, 1), %al
 movb %al, temp_res+1
-### Byte 2 ###
 movzbl temp_dest_buf+2, %ecx
 movl XOR_PTR(,%ecx, 4), %edx
 movzbl temp_src_buf+2, %ebx
 movb (%edx, %ebx, 1), %al
 movb %al, temp_res+2
-### Byte 3 ###
 movzbl temp_dest_buf+3, %ecx
 movl XOR_PTR(,%ecx, 4), %edx
 movzbl temp_src_buf+3, %ebx
 movb (%edx, %ebx, 1), %al
 movb %al, temp_res+3
-### Restore and Final Move ###
 movl temp_eax, %eax
 movl temp_ebx, %ebx
 movl temp_ecx, %ecx
